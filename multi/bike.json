@@ -1,0 +1,57 @@
+{
+  "_id": "ale",
+  "startUrl": [
+    "https://www.alebikewear.com/catalogue/men/apparel/jerseys/"
+  ],
+  "selectors": [
+    {
+      "id": "page",
+      "parentSelectors": [
+        "_root",
+        "page"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": "ul.listing__grid article.listing-block a"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "page"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "page"
+      ],
+      "type": "SelectorText",
+      "selector": ".sheet-price span",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "image",
+      "parentSelectors": [
+        "page"
+      ],
+      "type": "SelectorImage",
+      "selector": ".product__main-image img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "page"
+      ],
+      "type": "SelectorText",
+      "selector": ".text-image__text-block__description",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "_id": "ale",
+  "startUrl": [
+    "https://www.alebikewear.com/product/pr-s-20-british-federation-men-short-sleeve-jersey-white/"
+  ],
+  "selectors": [
+    {
+      "id": "title",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorText",
+      "selector": ".sheet-price span",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

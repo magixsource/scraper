@@ -1,0 +1,67 @@
+{
+  "_id": "giessegi",
+  "startUrl": [
+    "https://www.giessegi.com/en/product-category/man/top-man/short-sleeved-jerseys-en/"
+  ],
+  "selectors": [
+    {
+      "id": "page",
+      "parentSelectors": [
+        "_root",
+        "page"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": "a.next"
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "page"
+      ],
+      "type": "SelectorLink",
+      "selector": ".product-title a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1[itemprop='name']",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".price > span.woocommerce-Price-amount",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "image",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".slick-current img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div[itemprop='description']",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}
