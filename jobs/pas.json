@@ -1,26 +1,16 @@
 {
-  "_id": "giessegi",
+  "_id": "pissei",
   "startUrl": [
-    "https://www.giessegi.com/en/product-category/man/top-man/short-sleeved-jerseys-en/"
+    "https://www.pissei.com/en/man/top/short-sleeve-jerseys/"
   ],
   "selectors": [
     {
-      "id": "page",
-      "parentSelectors": [
-        "_root",
-        "page"
-      ],
-      "paginationType": "auto",
-      "type": "SelectorPagination",
-      "selector": "a.next"
-    },
-    {
       "id": "items",
       "parentSelectors": [
-        "page"
+        "_root"
       ],
       "type": "SelectorLink",
-      "selector": ".product-title a",
+      "selector": "a.card-img-link",
       "multiple": true,
       "linkType": "linkFromHref"
     },
@@ -30,7 +20,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "h1[itemprop='name']",
+      "selector": "h1",
       "multiple": false,
       "regex": ""
     },
@@ -40,17 +30,17 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": ".price > span.woocommerce-Price-amount",
+      "selector": "span.details_article_dett_prezzo_new_price",
       "multiple": false,
       "regex": ""
     },
     {
-      "id": "image",
+      "id": "coverPhoto",
       "parentSelectors": [
         "items"
       ],
       "type": "SelectorImage",
-      "selector": ".slick-current img",
+      "selector": ".detail_full_img_container div.row img",
       "multiple": false
     },
     {
@@ -58,8 +48,8 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorText",
-      "selector": "div[itemprop='description']",
+      "type": "SelectorHTML",
+      "selector": "div.details_attributi_descrizione",
       "multiple": false,
       "regex": ""
     }

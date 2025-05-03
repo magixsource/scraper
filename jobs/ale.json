@@ -1,7 +1,7 @@
 {
-  "_id": "giessegi",
+  "_id": "ale",
   "startUrl": [
-    "https://www.giessegi.com/en/product-category/man/top-man/short-sleeved-jerseys-en/"
+    "https://www.alebikewear.com/catalogue/men/apparel/jerseys/"
   ],
   "selectors": [
     {
@@ -12,54 +12,44 @@
       ],
       "paginationType": "auto",
       "type": "SelectorPagination",
-      "selector": "a.next"
-    },
-    {
-      "id": "items",
-      "parentSelectors": [
-        "page"
-      ],
-      "type": "SelectorLink",
-      "selector": ".product-title a",
-      "multiple": true,
-      "linkType": "linkFromHref"
+      "selector": "ul.listing__grid article.listing-block a"
     },
     {
       "id": "title",
       "parentSelectors": [
-        "items"
+        "page"
       ],
       "type": "SelectorText",
-      "selector": "h1[itemprop='name']",
+      "selector": "h1",
       "multiple": false,
       "regex": ""
     },
     {
       "id": "priceInStr",
       "parentSelectors": [
-        "items"
+        "page"
       ],
       "type": "SelectorText",
-      "selector": ".price > span.woocommerce-Price-amount",
+      "selector": ".sheet-price span",
       "multiple": false,
       "regex": ""
     },
     {
       "id": "image",
       "parentSelectors": [
-        "items"
+        "page"
       ],
       "type": "SelectorImage",
-      "selector": ".slick-current img",
+      "selector": ".product__main-image img",
       "multiple": false
     },
     {
       "id": "content",
       "parentSelectors": [
-        "items"
+        "page"
       ],
       "type": "SelectorText",
-      "selector": "div[itemprop='description']",
+      "selector": ".text-image__text-block__description",
       "multiple": false,
       "regex": ""
     }

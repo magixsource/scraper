@@ -1,0 +1,67 @@
+{
+  "_id": "gobik",
+  "startUrl": [
+    "https://gobik.com/en/collections/jerseys/gender-men?page=1"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": ".h5 a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "page",
+      "parentSelectors": [
+        "_root",
+        "page"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": "a[aria-label='Page 2']"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1.title-h3",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".price--large .price__regular span.price-item",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorHTML",
+      "selector": "div.product__description",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "images",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".product__media img",
+      "multiple": false
+    }
+  ]
+}
