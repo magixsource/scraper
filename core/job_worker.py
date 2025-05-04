@@ -119,20 +119,24 @@ def save_as_csv(job, scraped):
     LOG.info(f"Saved scraped data to file: {file_path}")
 
 
+async def process_single_job(job, semaphore):
+    async with semaphore:
+        LOG.info(f"Beginning processing job: {job}.")
+        try:
+            scraped = await scrape(job)
+            LOG.info(f"Scraped result for url: {job.startUrl}, with result: \n{scraped}")
+            save_as_csv(job, scraped)
+        except Exception as e:
+            LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
+
+
 async def process_job():
     jobs = await get_file_job()
-    if jobs:
-        for job in jobs:
-            LOG.info(f"Beginning processing job: {job}.")
-            try:
-                scraped = await scrape(job)
-                LOG.info(
-                    f"Scraped result for url: {job.startUrl}, with result: \n{scraped}"
-                )
-                # 保存为csv文件
-                save_as_csv(job, scraped)
-            except Exception as e:
-                LOG.error(f"Exception as occurred: {e}\n{traceback.print_exc()}")
+    if not jobs:
+        return
+    semaphore = asyncio.Semaphore(3)  # 最大并发数为 3
+    tasks = [process_single_job(job, semaphore) for job in jobs]
+    await asyncio.gather(*tasks)
 
 
 async def main():
