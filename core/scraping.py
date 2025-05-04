@@ -200,6 +200,8 @@ async def collect_scraped_elements(page: Tuple[str, str], selectors: List[Scrape
                 text = e.get("src", "")
             elif selector.type == "SelectorElementAttribute":
                 text = e.get(selector.extractAttribute, "")
+            elif selector.type == "SelectorHTML":
+                text = str(e)
 
             # print(f"==========={e} --> ====={selector.id} : {text}")
             captured_element = CapturedElement(
