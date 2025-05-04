@@ -11,7 +11,7 @@ from urllib.parse import urlparse, urljoin
 from core.models import ScrapeJob, ScrapeSelector, CapturedElement
 from core.scraping_utils import scrape_content
 
-logging.getLogger('seleniumwire.handler').setLevel(logging.WARNING)
+# logging.getLogger('seleniumwire.handler').setLevel(logging.WARNING)
 LOG = logging.getLogger(__name__)
 
 

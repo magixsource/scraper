@@ -1,3 +1,4 @@
+import concurrent
 import json
 import traceback
 
@@ -130,6 +131,16 @@ async def process_single_job(job, semaphore):
             LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
 
 
+async def process_single_job_sync(job):
+    try:
+        LOG.info(f"Beginning processing job: {job}.")
+        scraped = await scrape(job)
+        LOG.info(f"Scraped result for url: {job.startUrl}, with result: \n{scraped}")
+        save_as_csv(job, scraped)
+    except Exception as e:
+        LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
+
+
 async def process_job():
     jobs = await get_file_job()
     if not jobs:
@@ -139,12 +150,27 @@ async def process_job():
     await asyncio.gather(*tasks)
 
 
+async def process_job_sync():
+    jobs = await get_file_job()
+    if not jobs:
+        return
+
+    # 使用 ThreadPoolExecutor 来并发执行
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+        loop = asyncio.get_event_loop()
+        tasks = [
+            loop.run_in_executor(pool, lambda j=job: asyncio.run(process_single_job_sync(j)))
+            for job in jobs
+        ]
+        await asyncio.gather(*tasks)
+
+
 async def main():
     LOG.info("Starting job worker...")
     # while True:
     #     await process_job()
     #     await asyncio.sleep(5)
-    await process_job()
+    await process_job_sync()
 
 
 if __name__ == "__main__":
