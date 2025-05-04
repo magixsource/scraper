@@ -9,6 +9,7 @@ __pycache__/
 # idea
 .idea/
 *.iml
+data/
 
 # Distribution / packaging
 .Python
