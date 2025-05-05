@@ -13,7 +13,7 @@ cffi==1.17.1
 chainmap==1.0.3
 charset-normalizer==3.4.2
 combomethod==1.0.12
-cryptography==44.0.2
+cryptography==42.0.5
 exceptiongroup==1.2.2
 fake-useragent==1.5.1
 frozenlist==1.5.0
