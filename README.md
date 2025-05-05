@@ -33,6 +33,6 @@ This scraper project is a 'Web Scraper Chrome Extension' python implementation.
 
 ## Roadmap
 * [ ] Support schedule job
-* [ ] Support upload data to database or web API
+* [x] Support upload data to database or web API
 * [ ] Support data process pipeline
 * [ ] Support data wash like `regex`、`replace`、`split`

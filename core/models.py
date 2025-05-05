@@ -15,6 +15,7 @@ class ScrapeSelector(pydantic.BaseModel):
     multiple: Optional[bool] = False
     regex: Optional[str] = None
     paginationType: Optional[str] = None
+    extraReplace:  Optional[str] = None
 
 
 class ScrapeJob(pydantic.BaseModel):

@@ -207,9 +207,13 @@ async def collect_scraped_elements(page: Tuple[str, str], selectors: List[Scrape
             elif selector.type == "SelectorHTML":
                 text = str(e)
 
-            # 如果有正则，则提取正则
-            if len(text) > 0 and len(selector.regex) > 0:
-                text = re.findall(selector.regex, text)
+            if len(text) > 0:
+                # 如果有正则，则提取正则
+                if len(selector.regex) > 0:
+                    text = re.findall(selector.regex, text)
+                # 如果有extraReplace，则替换
+                if len(selector.extraReplace):
+                    text = str(text).replace(selector.extraReplace, "").strip()
 
             # print(f"==========={e} --> ====={selector.id} : {text}")
             captured_element = CapturedElement(
