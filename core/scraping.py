@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Any, Optional, List, Dict, Set, Tuple
 import random
 
@@ -205,6 +206,10 @@ async def collect_scraped_elements(page: Tuple[str, str], selectors: List[Scrape
                 text = e.get(selector.extractAttribute, "")
             elif selector.type == "SelectorHTML":
                 text = str(e)
+
+            # 如果有正则，则提取正则
+            if len(text) > 0 and len(selector.regex) > 0:
+                text = re.findall(selector.regex, text)
 
             # print(f"==========={e} --> ====={selector.id} : {text}")
             captured_element = CapturedElement(
