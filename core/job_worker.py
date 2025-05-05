@@ -1,5 +1,6 @@
 import concurrent
 import json
+import os
 import traceback
 
 import csv
@@ -10,6 +11,8 @@ from datetime import datetime
 from pathlib import Path
 
 import pydantic
+import requests
+from dotenv import load_dotenv
 
 from core.scraping import scrape
 from models import ScrapeJob
@@ -20,6 +23,9 @@ import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOG = logging.getLogger(__name__)
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', 'config', '.env')
+load_dotenv(dotenv_path)
 
 
 async def get_file_job():
@@ -41,35 +47,6 @@ async def get_file_job():
     if not jobs:
         return None
     return jobs
-
-
-def get_csv_header(dict_obj):
-    for middle_dict in dict_obj.values():
-        result = ['scrape_uuid', 'scrape_url', 'scrape_at']
-        for inner_dict in middle_dict.values():
-            for element in inner_dict:
-                result.append(element.name)
-        return ','.join(result)
-
-
-def get_csv_data(scraped):
-    row_num = 0
-    now = datetime.now()
-    result = []
-    for outer_dict in scraped:
-        keys = outer_dict.keys()
-        scrape_url = str(list(keys)[0])
-
-        for middle_dict in outer_dict.values():
-            row_num += 1
-            obj = [str(row_num), scrape_url, now.strftime("%Y-%m-%d %H-%M-%S")]
-            for inner_dict in middle_dict.values():
-                for element in inner_dict:
-                    obj.append(element.text)
-            result.append(','.join(str(x) for x in obj))
-
-    quoted_result = '\n'.join('"' + '","'.join(row.split(',')) + '"' for row in result)
-    return quoted_result
 
 
 def get_csv_data_v2(scraped):
@@ -118,36 +95,80 @@ def save_as_csv(job, scraped):
         # f.write(data_rows)
         f.write(get_csv_data_v2(scraped))
     LOG.info(f"Saved scraped data to file: {file_path}")
+    return str(file_path)
 
 
-async def process_single_job(job, semaphore):
-    async with semaphore:
-        LOG.info(f"Beginning processing job: {job}.")
+def login_to_service():
+    login_api_endpoint = os.getenv("ENDPOINT_LOGIN")
+    if not login_api_endpoint:
+        LOG.error("ENDPOINT_LOGIN is not set in environment variables.")
+        return
+    try:
+        response = requests.post(
+            login_api_endpoint,
+            json={"username": os.getenv("AUTH_USERNAME"), "password": os.getenv("AUTH_PASSWORD")},
+            headers={"Content-Type": "application/json"}
+        )
+        if response.status_code == 200:
+            return response.json()["id_token"]
+        else:
+            LOG.error(f"Failed to login. Status code: {response.status_code}, Response: {response.text}")
+            return
+    except Exception as e:
+        LOG.error(f"Error occurred during login: {e}")
+
+
+def upload_to_web_api(file_path, job, auth_token):
+    api_endpoint = os.getenv('ENDPOINT_UPLOAD')
+
+    print(f"Uploading file to {api_endpoint}")
+    if not api_endpoint or not auth_token:
+        LOG.error("UPLOAD_ENDPOINT or UPLOAD_TOKEN is not set in environment variables.")
+        return
+
+    # 读取文件内容
+    with open(file_path, 'rb') as f:
+        files = {
+            'file': (file_path.split('/')[-1], f, 'text/csv')  # 假设上传的文件是 CSV 格式
+        }
+
+        # 如果 API 需要额外的字段，可以添加到 data 或 headers 中
+        portal_brand_id = os.getenv(f'IDENTIFIER_{job.id.upper()}')
+        data = {
+            'portalBrandId': portal_brand_id  # 示例参数，根据实际 API 要求调整
+        }
+
+        headers = {
+            'Authorization': f'Bearer {auth_token}'
+        }
+
         try:
-            scraped = await scrape(job)
-            LOG.info(f"Scraped result for url: {job.startUrl}, with result: \n{scraped}")
-            save_as_csv(job, scraped)
+            response = requests.post(
+                api_endpoint,
+                files=files,
+                data=data,
+                headers=headers
+            )
+
+            if response.status_code == 200:
+                LOG.info("File uploaded successfully.")
+            else:
+                LOG.error(f"Failed to upload file. Status code: {response.status_code}, Response: {response.text}")
         except Exception as e:
-            LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
+            LOG.error(f"Error occurred during upload: {e}")
 
 
-async def process_single_job_sync(job):
+async def process_single_job_sync(job, auth_token):
     try:
         LOG.info(f"Beginning processing job: {job}.")
         scraped = await scrape(job)
         LOG.info(f"Scraped result for url: {job.startUrl}, with result: \n{scraped}")
-        save_as_csv(job, scraped)
+        file_path = save_as_csv(job, scraped)
+        # upload to web api
+        LOG.info("Upload to web api")
+        upload_to_web_api(file_path, job, auth_token)
     except Exception as e:
         LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
-
-
-async def process_job():
-    jobs = await get_file_job()
-    if not jobs:
-        return
-    semaphore = asyncio.Semaphore(3)  # 最大并发数为 3
-    tasks = [process_single_job(job, semaphore) for job in jobs]
-    await asyncio.gather(*tasks)
 
 
 async def process_job_sync():
@@ -155,11 +176,12 @@ async def process_job_sync():
     if not jobs:
         return
 
+    auth_token = login_to_service()
     # 使用 ThreadPoolExecutor 来并发执行
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         loop = asyncio.get_event_loop()
         tasks = [
-            loop.run_in_executor(pool, lambda j=job: asyncio.run(process_single_job_sync(j)))
+            loop.run_in_executor(pool, lambda j=job: asyncio.run(process_single_job_sync(j, auth_token)))
             for job in jobs
         ]
         await asyncio.gather(*tasks)
@@ -171,6 +193,21 @@ async def main():
     #     await process_job()
     #     await asyncio.sleep(5)
     await process_job_sync()
+    # file_path = "../data/ale_2025-05-04_16-36-19.csv"
+    # job = ScrapeJob(
+    #     _id="ale",
+    #     startUrl=["https://www.ale.com.tw/"],
+    #     selectors=[
+    #         ScrapeSelector(
+    #             id="ale_1",
+    #             type="SelectorText",
+    #             selector=".sc-1h0w9jn-0.fqZJJZ",
+    #             parentSelectors=["_root"],
+    #         )
+    #     ]
+    # )
+    # auth_token = login_to_service()
+    # upload_to_web_api(file_path, job, auth_token)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Any, Optional, List, Dict, Set, Tuple
 import random
 
@@ -76,7 +77,10 @@ def create_driver(proxies: Optional[List[str]] = []):
     # )
     driver = webdriver.Chrome(
         options=chrome_options,
-        seleniumwire_options=sw_options,
+        seleniumwire_options={
+            **sw_options,
+            "request_wait_timeout": 10,  # 响应最大等待时间设为 10 秒
+        },
     )
     return driver
 
@@ -117,13 +121,12 @@ async def make_site_request(
     # if not selector_list:
     #     return
     # debug end
-    driver = create_driver(proxies)
-    driver.implicitly_wait(10)
-
-    # if headers:
-    #     driver.request_interceptor = interceptor(headers)
-
+    driver = None
     try:
+        driver = create_driver(proxies)
+        driver.implicitly_wait(10)
+        # if headers:
+        #     driver.request_interceptor = interceptor(headers)
         LOG.info(f"==============Visiting URL: {url}")
         # LOG.info(f"==============selectors: {selectors}")
         driver.get(url)
@@ -133,10 +136,11 @@ async def make_site_request(
         visited_urls.add(final_url)
 
         page_source = scrape_content(driver, pages)
-
+    except Exception as e:
+        LOG.error(f"Exception occurred: {e}")
+        return
     finally:
         driver.quit()
-
     if not multi_page_scrape:
         return
 
@@ -202,6 +206,14 @@ async def collect_scraped_elements(page: Tuple[str, str], selectors: List[Scrape
                 text = e.get(selector.extractAttribute, "")
             elif selector.type == "SelectorHTML":
                 text = str(e)
+
+            if len(text) > 0:
+                # 如果有正则，则提取正则
+                if len(selector.regex) > 0:
+                    text = re.findall(selector.regex, text)
+                # 如果有extraReplace，则替换
+                if len(selector.extraReplace):
+                    text = str(text).replace(selector.extraReplace, "").strip()
 
             # print(f"==========={e} --> ====={selector.id} : {text}")
             captured_element = CapturedElement(
