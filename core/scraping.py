@@ -15,6 +15,27 @@ from core.scraping_utils import scrape_content
 # logging.getLogger('seleniumwire.handler').setLevel(logging.WARNING)
 LOG = logging.getLogger(__name__)
 
+# 定义存储请求历史记录的文件路径
+REQUEST_HISTORY_FILE = "request_history.txt"
+
+
+def read_visited_urls(file_path: str) -> Set[str]:
+    """从文件中读取已访问的URL，并返回一个集合。"""
+    visited_urls = set()
+    try:
+        with open(file_path, "r") as file:
+            for line in file:
+                visited_urls.add(line.strip())
+    except FileNotFoundError:
+        LOG.warning(f"No request history file found at {file_path}")
+    return visited_urls
+
+
+def write_visited_url(file_path: str, url: str):
+    """将URL写入文件。"""
+    with open(file_path, "a") as file:
+        file.write(url + "\n")
+
 
 def is_same_domain(url: str, original_url: str) -> bool:
     parsed_url = urlparse(url)
@@ -108,6 +129,7 @@ async def make_site_request(
     if visited_urls is None:
         visited_urls = set()
     if url in visited_urls:
+        LOG.info(f"URL already visited: {url}")
         return
     if not is_valid_url(url):
         LOG.warning(f"Invalid URL: {url}")
@@ -152,7 +174,12 @@ async def make_site_request(
     # if not _selectors:
     _selectors = [selector for selector in selectors if
                   selector.type == 'SelectorPagination' or selector.type == 'SelectorLink']
+    if not _selectors:
+        # 将请求详情页的URL写入文件
+        write_visited_url(REQUEST_HISTORY_FILE, final_url)
+        return
 
+    # 遍历所有分页选择器
     for _selector in _selectors:
         for item_link in soup.select(_selector.selector):
             link = item_link.get('href')
@@ -236,7 +263,7 @@ def is_multi_page_scrape(selectors: List[ScrapeSelector]):
 
 
 async def scrape(job: ScrapeJob):
-    visited_urls: Set[str] = set()
+    visited_urls: Set[str] = read_visited_urls(REQUEST_HISTORY_FILE)
     pages: Set[Tuple[str, str]] = set()
     pagination_urls: Set[str] = set()
     url = job.startUrl[0]
