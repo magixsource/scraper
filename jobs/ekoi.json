@@ -1,7 +1,7 @@
 {
-  "_id": "pas",
+  "_id": "ekoi",
   "startUrl": [
-    "https://pasnormalstudios.com/int/collections/shop-tko-men?productMetafield=category%3ABibs&productMetafield=category%3AJerseys#shop"
+    "https://www.ekoi.com/en-cn/19-jerseys-velo-short-sleeves?f_discipline_1=112"
   ],
   "selectors": [
     {
@@ -10,7 +10,7 @@
         "_root"
       ],
       "type": "SelectorLink",
-      "selector": "div:nth-of-type(n+5) a.group",
+      "selector": "a.product__link",
       "multiple": true,
       "linkType": "linkFromHref"
     },
@@ -25,24 +25,23 @@
       "regex": ""
     },
     {
-      "id": "summary",
+      "id": "priceInStr",
       "parentSelectors": [
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.mb-5",
+      "selector": "span.price",
       "multiple": false,
       "regex": ""
     },
     {
-      "id": "price",
+      "id": "coverPhoto",
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorText",
-      "selector": "div.flex.text-sm",
-      "multiple": false,
-      "regex": ""
+      "type": "SelectorImage",
+      "selector": ".picture-desktop img",
+      "multiple": false
     },
     {
       "id": "content",
@@ -50,19 +49,9 @@
         "items"
       ],
       "type": "SelectorHTML",
-      "selector": "div.swiper-backface-hidden",
+      "selector": ".tab-description div.tabcontent__content",
       "multiple": false,
       "regex": ""
-    },
-    {
-      "id": "images",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorElementAttribute",
-      "selector": "li.aspect-\\[4\\/5\\] img",
-      "multiple": false,
-      "extractAttribute": "srcset"
     }
   ]
 }

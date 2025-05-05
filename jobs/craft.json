@@ -1,9 +1,19 @@
 {
-  "_id": "assos",
+  "_id": "craft",
   "startUrl": [
-    "https://www.assos.com/cn/man/clothing/jerseys.html"
+    "https://www.craftsports.us/search?q=cycling+jersey&_pos=1&_psq=Jersey&_ss=e&_v=1.0"
   ],
   "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "page"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.full-unstyled-link",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
     {
       "id": "page",
       "parentSelectors": [
@@ -12,17 +22,7 @@
       ],
       "paginationType": "auto",
       "type": "SelectorPagination",
-      "selector": ".jss104 div:nth-of-type(1) button.MuiButton-root"
-    },
-    {
-      "id": "items",
-      "parentSelectors": [
-        "_root"
-      ],
-      "type": "SelectorLink",
-      "selector": "div.AdvancedGrid-item>div>div>a",
-      "multiple": true,
-      "linkType": "linkFromHref"
+      "selector": "a.pagination__item--prev"
     },
     {
       "id": "title",
@@ -35,32 +35,22 @@
       "regex": ""
     },
     {
-      "id": "summary",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorText",
-      "selector": "div.MuiTypography-body1",
-      "multiple": false,
-      "regex": ""
-    },
-    {
       "id": "priceInStr",
       "parentSelectors": [
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.price",
+      "selector": ".price--large span.price-item--sale",
       "multiple": false,
       "regex": ""
     },
     {
-      "id": "images",
+      "id": "image",
       "parentSelectors": [
         "items"
       ],
       "type": "SelectorImage",
-      "selector": "div[id=gridMainSlider]>div:nth-of-type(2) img",
+      "selector": ".is-active img",
       "multiple": false
     },
     {
@@ -69,7 +59,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.jss1193",
+      "selector": "div.product__description",
       "multiple": false,
       "regex": ""
     }

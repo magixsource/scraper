@@ -1,7 +1,7 @@
 {
-  "_id": "pas",
+  "_id": "rapha",
   "startUrl": [
-    "https://pasnormalstudios.com/int/collections/shop-tko-men?productMetafield=category%3ABibs&productMetafield=category%3AJerseys#shop"
+    "https://rapha.cc/ap/zh/shop/jerseys"
   ],
   "selectors": [
     {
@@ -10,7 +10,7 @@
         "_root"
       ],
       "type": "SelectorLink",
-      "selector": "div:nth-of-type(n+5) a.group",
+      "selector": "a.sc-3eb7d18b-0",
       "multiple": true,
       "linkType": "linkFromHref"
     },
@@ -20,7 +20,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "h1",
+      "selector": "h3.title,.sc-bRBYWo h2",
       "multiple": false,
       "regex": ""
     },
@@ -30,27 +30,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.mb-5",
-      "multiple": false,
-      "regex": ""
-    },
-    {
-      "id": "price",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorText",
-      "selector": "div.flex.text-sm",
-      "multiple": false,
-      "regex": ""
-    },
-    {
-      "id": "content",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorHTML",
-      "selector": "div.swiper-backface-hidden",
+      "selector": "div.t-body-xl,.sc-bRBYWo p",
       "multiple": false,
       "regex": ""
     },
@@ -59,10 +39,39 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorElementAttribute",
-      "selector": "li.aspect-\\[4\\/5\\] img",
+      "type": "SelectorImage",
+      "selector": ".swiper-slide-active .slide-image-wrapper img,div.sc-hZSUBg:nth-of-type(1) img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.pdp-body__body-copy",
       "multiple": false,
-      "extractAttribute": "srcset"
+      "regex": ""
+    },
+    {
+      "id": "meterial",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "section:nth-of-type(5)",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.kPnBku",
+      "multiple": false,
+      "regex": ""
     }
   ]
 }

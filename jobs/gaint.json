@@ -1,7 +1,7 @@
 {
-  "_id": "pas",
+  "_id": "gaint-jersey",
   "startUrl": [
-    "https://pasnormalstudios.com/int/collections/shop-tko-men?productMetafield=category%3ABibs&productMetafield=category%3AJerseys#shop"
+    "https://www.giant.com.cn/index.php/index/gear_finder.html?typeid=16"
   ],
   "selectors": [
     {
@@ -10,7 +10,7 @@
         "_root"
       ],
       "type": "SelectorLink",
-      "selector": "div:nth-of-type(n+5) a.group",
+      "selector": "div.list_geartype>div.item_geartype:nth-of-type(1) .list_gear a",
       "multiple": true,
       "linkType": "linkFromHref"
     },
@@ -20,17 +20,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "h1",
-      "multiple": false,
-      "regex": ""
-    },
-    {
-      "id": "summary",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorText",
-      "selector": "div.mb-5",
+      "selector": "span.title",
       "multiple": false,
       "regex": ""
     },
@@ -40,7 +30,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.flex.text-sm",
+      "selector": "span.price",
       "multiple": false,
       "regex": ""
     },
@@ -50,19 +40,20 @@
         "items"
       ],
       "type": "SelectorHTML",
-      "selector": "div.swiper-backface-hidden",
+      "selector": "div.imagetext_box",
       "multiple": false,
       "regex": ""
     },
     {
-      "id": "images",
+      "id": "image",
       "parentSelectors": [
         "items"
       ],
       "type": "SelectorElementAttribute",
-      "selector": "li.aspect-\\[4\\/5\\] img",
+      "selector": ".cover div.swiper-slide-active",
       "multiple": false,
-      "extractAttribute": "srcset"
+      "extractAttribute": "style",
+      "regex": "https?://[^\\s>\"\\']+?\\.(?:jpe?g|png|gif|webp)(?:\\?[^\\s>\"\\']*)?"
     }
   ]
 }

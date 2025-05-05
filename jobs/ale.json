@@ -5,29 +5,9 @@
   ],
   "selectors": [
     {
-      "id": "page",
-      "parentSelectors": [
-        "_root",
-        "page"
-      ],
-      "paginationType": "auto",
-      "type": "SelectorPagination",
-      "selector": "ul.listing__grid article.listing-block a"
-    },
-    {
-      "id": "title",
-      "parentSelectors": [
-        "page"
-      ],
-      "type": "SelectorText",
-      "selector": "h1",
-      "multiple": false,
-      "regex": ""
-    },
-    {
       "id": "priceInStr",
       "parentSelectors": [
-        "page"
+        "items"
       ],
       "type": "SelectorText",
       "selector": ".sheet-price span",
@@ -37,7 +17,7 @@
     {
       "id": "image",
       "parentSelectors": [
-        "page"
+        "items"
       ],
       "type": "SelectorImage",
       "selector": ".product__main-image img",
@@ -46,12 +26,32 @@
     {
       "id": "content",
       "parentSelectors": [
-        "page"
+        "items"
       ],
       "type": "SelectorText",
       "selector": ".text-image__text-block__description",
       "multiple": false,
       "regex": ""
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": "ul.listing__grid article.listing-block a",
+      "multiple": true,
+      "linkType": "linkFromHref"
     }
   ]
 }

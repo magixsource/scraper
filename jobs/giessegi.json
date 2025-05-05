@@ -1,7 +1,7 @@
 {
-  "_id": "assos",
+  "_id": "giessegi",
   "startUrl": [
-    "https://www.assos.com/cn/man/clothing/jerseys.html"
+    "https://www.giessegi.com/en/product-category/man/top-man/short-sleeved-jerseys-en/"
   ],
   "selectors": [
     {
@@ -12,15 +12,15 @@
       ],
       "paginationType": "auto",
       "type": "SelectorPagination",
-      "selector": ".jss104 div:nth-of-type(1) button.MuiButton-root"
+      "selector": "a.next"
     },
     {
       "id": "items",
       "parentSelectors": [
-        "_root"
+        "page"
       ],
       "type": "SelectorLink",
-      "selector": "div.AdvancedGrid-item>div>div>a",
+      "selector": ".product-title a",
       "multiple": true,
       "linkType": "linkFromHref"
     },
@@ -30,17 +30,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "h1",
-      "multiple": false,
-      "regex": ""
-    },
-    {
-      "id": "summary",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorText",
-      "selector": "div.MuiTypography-body1",
+      "selector": "h1[itemprop='name']",
       "multiple": false,
       "regex": ""
     },
@@ -50,17 +40,17 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.price",
+      "selector": ".price > span.woocommerce-Price-amount",
       "multiple": false,
       "regex": ""
     },
     {
-      "id": "images",
+      "id": "image",
       "parentSelectors": [
         "items"
       ],
       "type": "SelectorImage",
-      "selector": "div[id=gridMainSlider]>div:nth-of-type(2) img",
+      "selector": ".slick-current img",
       "multiple": false
     },
     {
@@ -69,7 +59,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.jss1193",
+      "selector": "div[itemprop='description']",
       "multiple": false,
       "regex": ""
     }

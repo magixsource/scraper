@@ -1,7 +1,7 @@
 {
-  "_id": "pas",
+  "_id": "specialized",
   "startUrl": [
-    "https://pasnormalstudios.com/int/collections/shop-tko-men?productMetafield=category%3ABibs&productMetafield=category%3AJerseys#shop"
+    "https://www.specialized.com.cn/cn/zh/shop/equipment/specialized-mens/mens-clothing--shoes/mens-bike-jerseys/c/jerseysmen"
   ],
   "selectors": [
     {
@@ -10,9 +10,9 @@
         "_root"
       ],
       "type": "SelectorLink",
-      "selector": "div:nth-of-type(n+5) a.group",
+      "selector": "li.product-list__item a.product-list__name",
       "multiple": true,
-      "linkType": "linkFromHref"
+      "linkType": "linkFromAttributes"
     },
     {
       "id": "title",
@@ -20,17 +20,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "h1",
-      "multiple": false,
-      "regex": ""
-    },
-    {
-      "id": "summary",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorText",
-      "selector": "div.mb-5",
+      "selector": "h1[data-component=\"product-name\"]",
       "multiple": false,
       "regex": ""
     },
@@ -40,7 +30,17 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.flex.text-sm",
+      "selector": "div[data-component=\"sidebar\"] h5",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "summary",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".TypographyTheme__StyledP-sjgqh div",
       "multiple": false,
       "regex": ""
     },
@@ -50,7 +50,7 @@
         "items"
       ],
       "type": "SelectorHTML",
-      "selector": "div.swiper-backface-hidden",
+      "selector": "div[data-component=\"desktop-gallery\"]",
       "multiple": false,
       "regex": ""
     },
@@ -59,10 +59,9 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorElementAttribute",
-      "selector": "li.aspect-\\[4\\/5\\] img",
-      "multiple": false,
-      "extractAttribute": "srcset"
+      "type": "SelectorImage",
+      "selector": "div[data-component=\"styled-image-wrapper\"] img",
+      "multiple": false
     }
   ]
 }

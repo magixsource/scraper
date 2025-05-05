@@ -1,7 +1,7 @@
 {
-  "_id": "assos",
+  "_id": "trek",
   "startUrl": [
-    "https://www.assos.com/cn/man/clothing/jerseys.html"
+    "https://www.trekbikes.com/cn/zh_CN/%E8%87%AA%E8%A1%8C%E8%BD%A6%E6%9C%8D%E8%A3%85/%E9%AA%91%E8%A1%8C%E6%9C%8D/c/A206/"
   ],
   "selectors": [
     {
@@ -12,7 +12,7 @@
       ],
       "paginationType": "auto",
       "type": "SelectorPagination",
-      "selector": ".jss104 div:nth-of-type(1) button.MuiButton-root"
+      "selector": "a.pagination__link"
     },
     {
       "id": "items",
@@ -20,7 +20,7 @@
         "_root"
       ],
       "type": "SelectorLink",
-      "selector": "div.AdvancedGrid-item>div>div>a",
+      "selector": "li .cell a",
       "multiple": true,
       "linkType": "linkFromHref"
     },
@@ -30,7 +30,27 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "h1",
+      "selector": "h1.buying-zone__title",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "price",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.actual-price",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "brand_no",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.buying-zone__code",
       "multiple": false,
       "regex": ""
     },
@@ -40,17 +60,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.MuiTypography-body1",
-      "multiple": false,
-      "regex": ""
-    },
-    {
-      "id": "priceInStr",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorText",
-      "selector": "div.price",
+      "selector": ".buying-zone__positioning-statement p",
       "multiple": false,
       "regex": ""
     },
@@ -60,7 +70,7 @@
         "items"
       ],
       "type": "SelectorImage",
-      "selector": "div[id=gridMainSlider]>div:nth-of-type(2) img",
+      "selector": "swiper-container img",
       "multiple": false
     },
     {
@@ -68,8 +78,8 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorText",
-      "selector": "div.jss1193",
+      "type": "SelectorHTML",
+      "selector": "section#aftermarketProductFeaturesComponent",
       "multiple": false,
       "regex": ""
     }
