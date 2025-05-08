@@ -1,22 +1,29 @@
+import json
 import logging
+import os
+import random
 import re
 from typing import Any, Optional, List, Dict, Set, Tuple
-import random
+from urllib.parse import urlparse, urljoin
 
 from bs4 import BeautifulSoup
-from seleniumwire import webdriver
 from fake_useragent import UserAgent
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from urllib.parse import urlparse, urljoin
+from seleniumwire import webdriver
+from tldextract import tldextract
 
 from core.models import ScrapeJob, ScrapeSelector, CapturedElement
 from core.scraping_utils import scrape_content
 
-# logging.getLogger('seleniumwire.handler').setLevel(logging.WARNING)
+logging.getLogger('seleniumwire.handler').setLevel(logging.WARNING)
 LOG = logging.getLogger(__name__)
 
 # 定义存储请求历史记录的文件路径
-REQUEST_HISTORY_FILE = "request_history.txt"
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+REQUEST_HISTORY_FILE = os.path.join(CURRENT_DIR, "request_history.txt")
+
+SCRAPE_LIMIT = 2
+SCRAPE_COUNT = 0
 
 
 def read_visited_urls(file_path: str) -> Set[str]:
@@ -33,14 +40,19 @@ def read_visited_urls(file_path: str) -> Set[str]:
 
 def write_visited_url(file_path: str, url: str):
     """将URL写入文件。"""
+    LOG.info(f"Writing visited URL: {url}")
     with open(file_path, "a") as file:
         file.write(url + "\n")
 
 
 def is_same_domain(url: str, original_url: str) -> bool:
-    parsed_url = urlparse(url)
-    parsed_original_url = urlparse(original_url)
-    return parsed_url.netloc == parsed_original_url.netloc or parsed_url.netloc == ""
+    LOG.info(f"Checking if URL is same domain: {url} and {original_url}")
+
+    def extract_main_domain(url_str):
+        extracted = tldextract.extract(url_str)
+        return f"{extracted.domain}.{extracted.suffix}"
+
+    return extract_main_domain(url) == extract_main_domain(original_url)
 
 
 def is_valid_url(url: str) -> bool:
@@ -118,6 +130,7 @@ async def make_site_request(
 ) -> None:
     """Make basic `GET` request to site using Selenium."""
     # Check if URL has already been visited
+    global SCRAPE_COUNT, SCRAPE_LIMIT
     if selectors is None:
         selectors = []
     if proxies is None:
@@ -135,6 +148,10 @@ async def make_site_request(
         LOG.warning(f"Invalid URL: {url}")
         return
     if not selectors or not is_same_domain(url, original_url) or selectors == []:
+        return
+
+    if SCRAPE_COUNT >= SCRAPE_LIMIT:
+        LOG.info(f"==============Reached scrape limit: {SCRAPE_LIMIT}")
         return
 
     # debug begin 调试：只抓取分页
@@ -164,6 +181,9 @@ async def make_site_request(
     finally:
         driver.quit()
     if not multi_page_scrape:
+        # 将请求详情页的URL写入文件
+        write_visited_url(REQUEST_HISTORY_FILE, final_url)
+        SCRAPE_COUNT += 1
         return
 
     soup = BeautifulSoup(page_source, "html.parser")
@@ -174,16 +194,12 @@ async def make_site_request(
     # if not _selectors:
     _selectors = [selector for selector in selectors if
                   selector.type == 'SelectorPagination' or selector.type == 'SelectorLink']
-    if not _selectors:
-        # 将请求详情页的URL写入文件
-        write_visited_url(REQUEST_HISTORY_FILE, final_url)
-        return
 
     # 遍历所有分页选择器
     for _selector in _selectors:
         for item_link in soup.select(_selector.selector):
             link = item_link.get('href')
-            # LOG.info(f"==============get link : {link}")
+            LOG.info(f"==============get link : {link}")
 
             if link:
                 if not urlparse(link).netloc:
@@ -196,12 +212,11 @@ async def make_site_request(
                     else:
                         all_child_selectors = [selector for selector in selectors if
                                                _selector.id in selector.parentSelectors]
-
                     _multi_page_scrape = is_multi_page_scrape(all_child_selectors)
-
                     # 如果是列表页，则添加到pagination_urls中
                     if _selector.paginationType:
                         pagination_urls.add(link)
+                        LOG.info(f"==============add pagination_urls : {link}")
 
                     await make_site_request(
                         link,
@@ -222,6 +237,7 @@ async def collect_scraped_elements(page: Tuple[str, str], selectors: List[Scrape
         if selector.type == "SelectorPagination" or selector.type == "SelectorLink":
             continue
         el = soup.select(selector.selector)
+        LOG.info(f"======= Selector: {selector.selector} and el: {el}")
 
         for e in el:
             text = ""
@@ -234,12 +250,12 @@ async def collect_scraped_elements(page: Tuple[str, str], selectors: List[Scrape
             elif selector.type == "SelectorHTML":
                 text = str(e)
 
-            if len(text) > 0:
+            if text:
                 # 如果有正则，则提取正则
-                if len(selector.regex) > 0:
-                    text = re.findall(selector.regex, text)
+                if selector.regex:
+                    text = str(re.findall(selector.regex, text)[0]).strip()
                 # 如果有extraReplace，则替换
-                if len(selector.extraReplace):
+                if selector.extraReplace:
                     text = str(text).replace(selector.extraReplace, "").strip()
 
             # print(f"==========={e} --> ====={selector.id} : {text}")
@@ -262,6 +278,22 @@ def is_multi_page_scrape(selectors: List[ScrapeSelector]):
     return False
 
 
+def write_pages(pages_file: str, pages: Set[Tuple[str, str]]) -> None:
+    with open(pages_file, "w") as f:
+        # 将 Tuple 转为 List，并排序以保证一致性（可选）
+        json.dump([list(page) for page in pages], f, ensure_ascii=False, indent=2)
+
+
+def read_pages(pages_file: str) -> Set[Tuple[str, str]]:
+    if not os.path.exists(pages_file):
+        return set()
+
+    with open(pages_file, "r") as f:
+        pages_data = json.load(f)
+        # 确保每个元素都是列表，并转换为 tuple
+        return set(tuple(item) if isinstance(item, list) else item for item in pages_data)
+
+
 async def scrape(job: ScrapeJob):
     visited_urls: Set[str] = read_visited_urls(REQUEST_HISTORY_FILE)
     pages: Set[Tuple[str, str]] = set()
@@ -271,20 +303,31 @@ async def scrape(job: ScrapeJob):
     selectors = job.selectors if job.selectors else []
     proxies = []
 
-    # 起始页如果是列表页，则添加到pagination_urls中
-    if multi_page_scrape:
-        pagination_urls = set(job.startUrl)
+    # 判断从本地读取pages
+    pages_file = f"../data/{job.id}.json"
+    pages_exist = os.path.exists(pages_file)
+    if pages_exist:
+        with open(pages_file, "r") as f:
+            pages_data = json.load(f)
+            # 确保每个元素都是列表，并转换为 tuple
+            pages = set(tuple(item) if isinstance(item, list) else item for item in pages_data)
+    else:
+        # 起始页如果是列表页，则添加到pagination_urls中
+        if multi_page_scrape:
+            pagination_urls = set(job.startUrl)
 
-    _ = await make_site_request(
-        url,
-        multi_page_scrape=multi_page_scrape,
-        visited_urls=visited_urls,
-        pages=pages,
-        pagination_urls=pagination_urls,
-        original_url=url,
-        proxies=proxies,
-        selectors=selectors,
-    )
+        _ = await make_site_request(
+            url,
+            multi_page_scrape=multi_page_scrape,
+            visited_urls=visited_urls,
+            pages=pages,
+            pagination_urls=pagination_urls,
+            original_url=url,
+            proxies=proxies,
+            selectors=selectors,
+        )
+
+        write_pages(pages_file, pages)
 
     elements: List[Dict[str, Dict[str, List[CapturedElement]]]] = list()
 
@@ -294,5 +337,4 @@ async def scrape(job: ScrapeJob):
         if page[1] in pagination_urls:
             continue
         elements.append(await collect_scraped_elements(page, selectors))
-
     return elements
