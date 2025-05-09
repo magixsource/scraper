@@ -20,7 +20,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "h3.title,.sc-bRBYWo h2",
+      "selector": "h1",
       "multiple": false,
       "regex": ""
     },
@@ -30,7 +30,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.t-body-xl,.sc-bRBYWo p",
+      "selector": "h1~p",
       "multiple": false,
       "regex": ""
     },
@@ -40,26 +40,16 @@
         "items"
       ],
       "type": "SelectorImage",
-      "selector": ".swiper-slide-active .slide-image-wrapper img,div.sc-hZSUBg:nth-of-type(1) img",
+      "selector": "#main-content img:nth-of-type(1)",
       "multiple": false
     },
     {
       "id": "content",
       "parentSelectors": [
-        "items"
+        "open_tab"
       ],
       "type": "SelectorText",
-      "selector": "div.pdp-body__body-copy",
-      "multiple": false,
-      "regex": ""
-    },
-    {
-      "id": "meterial",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorText",
-      "selector": "section:nth-of-type(5)",
+      "selector": "div[data-testid=\"details-accordion-description\"]",
       "multiple": false,
       "regex": ""
     },
@@ -69,7 +59,47 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.kPnBku",
+      "selector": "form[data-testid=pdp-product-form]>div:nth-of-type(3)>div:nth-of-type(2) p",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "open_tab",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorElementClick",
+      "clickActionType": "real",
+      "clickElementSelector": "details[data-testid='accordion-description']",
+      "clickElementUniquenessType": "uniqueText",
+      "clickType": "clickOnce",
+      "delay": 4000,
+      "discardInitialElements": "discard",
+      "multiple": false,
+      "selector": "form[data-testid=pdp-product-form]"
+    },
+    {
+      "id": "open_tab_m",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorElementClick",
+      "clickActionType": "real",
+      "clickElementSelector": "details[data-testid='accordion-careAndMaterials']",
+      "clickElementUniquenessType": "uniqueText",
+      "clickType": "clickOnce",
+      "delay": 4000,
+      "discardInitialElements": "discard",
+      "multiple": false,
+      "selector": "form[data-testid=pdp-product-form]"
+    },
+    {
+      "id": "material",
+      "parentSelectors": [
+        "open_tab_m"
+      ],
+      "type": "SelectorText",
+      "selector": "div[data-testid='details-accordion-careAndMaterials']",
       "multiple": false,
       "regex": ""
     }
