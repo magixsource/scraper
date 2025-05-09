@@ -1,14 +1,18 @@
+import itertools
 import json
 import logging
 import os
 import random
 import re
+import time
 from typing import Any, Optional, List, Dict, Set, Tuple
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin, urlunparse
 
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.common.by import By
 from seleniumwire import webdriver
 from tldextract import tldextract
 
@@ -24,6 +28,7 @@ REQUEST_HISTORY_FILE = os.path.join(CURRENT_DIR, "request_history.txt")
 
 SCRAPE_LIMIT = 2
 SCRAPE_COUNT = 0
+ENV = "dev"
 
 
 def read_visited_urls(file_path: str) -> Set[str]:
@@ -40,6 +45,8 @@ def read_visited_urls(file_path: str) -> Set[str]:
 
 def write_visited_url(file_path: str, url: str):
     """将URL写入文件。"""
+    if ENV == "dev":
+        return
     LOG.info(f"Writing visited URL: {url}")
     with open(file_path, "a") as file:
         file.write(url + "\n")
@@ -118,6 +125,19 @@ def create_driver(proxies: Optional[List[str]] = []):
     return driver
 
 
+async def handle_click(click_selectors, driver, pages):
+    for selector in click_selectors:
+        try:
+            element = driver.find_element(By.CSS_SELECTOR, selector.clickElementSelector)
+            if element:
+                LOG.info(f"Clicking element: {element}")
+                element.click()
+                time.sleep(selector.delay / 1000)
+        except NoSuchElementException:
+            LOG.info(f"Element not found: {selector.clickElementSelector}")
+    _ = scrape_content(driver, pages)
+
+
 async def make_site_request(
         url: str,
         multi_page_scrape: bool = False,
@@ -175,6 +195,14 @@ async def make_site_request(
         visited_urls.add(final_url)
 
         page_source = scrape_content(driver, pages)
+        click_selectors = [selector for selector in selectors if
+                           selector.type == 'SelectorElementClick']
+        if click_selectors:
+            await handle_click(
+                click_selectors,
+                driver,
+                pages,
+            )
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
         return
@@ -229,45 +257,55 @@ async def make_site_request(
                     )
 
 
-async def collect_scraped_elements(page: Tuple[str, str], selectors: List[ScrapeSelector]):
-    soup = BeautifulSoup(page[0], "html.parser")
+async def collect_scraped_elements(grouped_list: List[Tuple[str, str]], selectors: List[ScrapeSelector]):
     elements: Dict[str, List[CapturedElement]] = dict()
+    key = grouped_list[0][1]
 
-    for selector in selectors:
-        if selector.type == "SelectorPagination" or selector.type == "SelectorLink":
-            continue
-        el = soup.select(selector.selector)
-        LOG.info(f"======= Selector: {selector.selector} and el: {el}")
+    for page in grouped_list:
+        soup = BeautifulSoup(page[0], "html.parser")
 
-        for e in el:
-            text = ""
-            if selector.type == "SelectorText":
-                text = str(e.text).replace("\n", "").strip()
-            elif selector.type == "SelectorImage":
-                text = e.get("src", "")
-            elif selector.type == "SelectorElementAttribute":
-                text = e.get(selector.extractAttribute, "")
-            elif selector.type == "SelectorHTML":
-                text = str(e)
-
-            if text:
-                # 如果有正则，则提取正则
-                if selector.regex:
-                    text = str(re.findall(selector.regex, text)[0]).strip()
-                # 如果有extraReplace，则替换
-                if selector.extraReplace:
-                    text = str(text).replace(selector.extraReplace, "").strip()
-
-            # print(f"==========={e} --> ====={selector.id} : {text}")
-            captured_element = CapturedElement(
-                selector=selector.selector, text=text, name=selector.id
-            )
-            if selector.id in elements and selector.multiple:
-                elements[selector.id].append(captured_element)
+        for selector in selectors:
+            if selector.type == "SelectorPagination" or selector.type == "SelectorLink":
                 continue
-            elements[selector.id] = [captured_element]
+            # 对于多个页面，如果已经抓取过并且有值，则跳过
+            if len(elements) > 0 and elements.get(selector.id) and elements.get(selector.id, [])[0].text:
+                LOG.info(
+                    f"======= Skip selector: {selector.id}, and text value is {elements.get(selector.id, [])[0].text}")
+                continue
+            el = soup.select(selector.selector)
+            # LOG.info(f"======= Selector: {selector.selector} and el: {el}")
 
-    return {page[1]: elements}
+            for e in el:
+                text = ""
+                if selector.type == "SelectorElementClick":
+                    continue
+                if selector.type == "SelectorText":
+                    text = str(e.text).replace("\n", "").strip()
+                elif selector.type == "SelectorImage":
+                    text = e.get("src", "")
+                elif selector.type == "SelectorElementAttribute":
+                    text = e.get(selector.extractAttribute, "")
+                elif selector.type == "SelectorHTML":
+                    text = str(e)
+
+                if text:
+                    # 如果有正则，则提取正则
+                    if selector.regex:
+                        text = str(re.findall(selector.regex, text)[0]).strip()
+                    # 如果有extraReplace，则替换
+                    if selector.extraReplace:
+                        text = str(text).replace(selector.extraReplace, "").strip()
+
+                # print(f"==========={e} --> ====={selector.id} : {text}")
+                captured_element = CapturedElement(
+                    selector=selector.selector, text=text, name=selector.id
+                )
+                if selector.id in elements and selector.multiple:
+                    elements[selector.id].append(captured_element)
+                    continue
+                elements[selector.id] = [captured_element]
+
+    return {key: elements}
 
 
 def is_multi_page_scrape(selectors: List[ScrapeSelector]):
@@ -292,6 +330,18 @@ def read_pages(pages_file: str) -> Set[Tuple[str, str]]:
         pages_data = json.load(f)
         # 确保每个元素都是列表，并转换为 tuple
         return set(tuple(item) if isinstance(item, list) else item for item in pages_data)
+
+
+def pad_www(url: str) -> str:
+    parsed = urlparse(url)
+    netloc = parsed.netloc.lower()
+    if '.' in netloc and not netloc.startswith("www."):
+        # 只有在主域名上才加 www.
+        parts = netloc.split('.', 1)
+        if len(parts[0]) > 3:  # 简单判断第一个部分不是子域（如 mail.example.com）
+            netloc = f"www.{netloc}"
+    new_parsed = parsed._replace(netloc=netloc)
+    return urlunparse(new_parsed)
 
 
 async def scrape(job: ScrapeJob):
@@ -332,9 +382,17 @@ async def scrape(job: ScrapeJob):
     elements: List[Dict[str, Dict[str, List[CapturedElement]]]] = list()
 
     print(f"==========pages size : {len(pages)}")
-    for page in pages:
+
+    # 先排序，确保 group by 能按 key 正确分组
+    sorted_pages = sorted(pages, key=lambda x: x[1])
+    # 将pages按page[1]进行分组
+    grouped_pages = itertools.groupby(sorted_pages, key=lambda x: x[1])
+    normalized_pagination_set = {pad_www(url) for url in pagination_urls}
+    for key, group in grouped_pages:
         # 如果是列表页，则跳过
-        if page[1] in pagination_urls:
+        if key in normalized_pagination_set:
             continue
-        elements.append(await collect_scraped_elements(page, selectors))
+        # 注意：需要把 group 转成 list 才能多次遍历
+        grouped_list = [(p[0], p[1]) for p in group]
+        elements.append(await collect_scraped_elements(grouped_list, selectors))
     return elements
