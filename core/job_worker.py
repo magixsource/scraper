@@ -28,6 +28,11 @@ dotenv_path = os.path.join(os.path.dirname(__file__), '..', 'config', '.env')
 load_dotenv(dotenv_path)
 
 
+# 获取当前脚本所在目录的父目录（即项目根目录）
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(project_root)  # 手动添加根目录到模块搜索路径
+
+
 async def get_file_job():
     # 从目录jobs中取出所有文件
     folder_path = Path('../jobs')
