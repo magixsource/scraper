@@ -24,7 +24,8 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOG = logging.getLogger(__name__)
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '..', 'config', '.env')
+env_mode = os.getenv("ENV", "dev")
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', 'config', f'.env.{env_mode}')
 load_dotenv(dotenv_path)
 
 
@@ -35,7 +36,7 @@ sys.path.append(project_root)  # 手动添加根目录到模块搜索路径
 
 async def get_file_job():
     # 从目录jobs中取出所有文件
-    folder_path = Path('../jobs')
+    folder_path = Path(f'../{env_mode}')
     files = [f for f in folder_path.iterdir() if f.is_file()]
     jobs = []
 
@@ -123,7 +124,7 @@ def login_to_service():
         LOG.error(f"Error occurred during login: {e}")
 
 
-def upload_to_web_api(file_path, job, auth_token):
+def upload_to_web_api(file_path, job_id, auth_token):
     api_endpoint = os.getenv('ENDPOINT_UPLOAD')
 
     print(f"Uploading file to {api_endpoint}")
@@ -138,7 +139,7 @@ def upload_to_web_api(file_path, job, auth_token):
         }
 
         # 如果 API 需要额外的字段，可以添加到 data 或 headers 中
-        portal_brand_id = os.getenv(f'IDENTIFIER_{job.id.upper()}')
+        portal_brand_id = os.getenv(f'IDENTIFIER_{job_id.upper()}')
         data = {
             'portalBrandId': portal_brand_id  # 示例参数，根据实际 API 要求调整
         }
@@ -200,21 +201,9 @@ async def main():
     #     await process_job()
     #     await asyncio.sleep(5)
     await process_job_sync()
-    # file_path = "../data/ale_2025-05-04_16-36-19.csv"
-    # job = ScrapeJob(
-    #     _id="ale",
-    #     startUrl=["https://www.ale.com.tw/"],
-    #     selectors=[
-    #         ScrapeSelector(
-    #             id="ale_1",
-    #             type="SelectorText",
-    #             selector=".sc-1h0w9jn-0.fqZJJZ",
-    #             parentSelectors=["_root"],
-    #         )
-    #     ]
-    # )
+    # file_path = "../data/gaint_2025-05-09_20-06-05.csv"
     # auth_token = login_to_service()
-    # upload_to_web_api(file_path, job, auth_token)
+    # upload_to_web_api(file_path, "gaint", auth_token)
 
 
 if __name__ == "__main__":
