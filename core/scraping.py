@@ -126,7 +126,7 @@ def create_driver(proxies: Optional[List[str]] = []):
     return driver
 
 
-async def handle_click(click_selectors, driver, pages):
+def handle_click(click_selectors, driver, pages):
     for selector in click_selectors:
         try:
             element = driver.find_element(By.CSS_SELECTOR, selector.clickElementSelector)
