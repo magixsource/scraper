@@ -1,0 +1,79 @@
+{
+  "_id": "DECATHLON",
+  "startUrl": [
+    "https://www.decathlon.com.cn/product-list?category_id=644a1c540c5c730001d1e020"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root",
+        "page"
+      ],
+      "type": "SelectorLink",
+      "selector": "div.right-box>div:nth-of-type(2) a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.pdp-base-info-box div.text-1A2A34",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".p-price div.price-format-display",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "summary",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.desc-text",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "image",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "div.product-detail-media-item:nth-of-type(1) img.opacity-1",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.functionality-list",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "page",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorElement",
+      "selector": "div.lg\\:w-full",
+      "multiple": true,
+      "scroll": true,
+      "elementLimit": 0
+    }
+  ]
+}
