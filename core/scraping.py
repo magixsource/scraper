@@ -5,7 +5,7 @@ import os
 import random
 import re
 import time
-from typing import Any, Optional, List, Dict, Set, Tuple
+from typing import Any, Optional, List, Dict, Set, Tuple, cast
 from urllib.parse import urlparse, urljoin, urlunparse
 
 from bs4 import BeautifulSoup
@@ -13,6 +13,7 @@ from fake_useragent import UserAgent
 from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire import webdriver
 from tldextract import tldextract
 
@@ -135,7 +136,26 @@ async def handle_click(click_selectors, driver, pages):
                 time.sleep(selector.delay / 1000)
         except NoSuchElementException:
             LOG.info(f"Element not found: {selector.clickElementSelector}")
-    _ = scrape_content(driver, pages)
+    page_source = scrape_content(driver, pages)
+    return page_source
+
+
+def handle_scroll(scroll_selectors, driver, pages):
+    initial_elements = len(driver.find_elements(By.CSS_SELECTOR, scroll_selectors[0].selector))
+    LOG.info(f"Initial number of elements: {initial_elements}")
+    while True:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        try:
+            WebDriverWait(driver, 10).until(
+                lambda d: len(d.find_elements(By.CSS_SELECTOR, scroll_selectors[0].selector)) > initial_elements
+            )
+            initial_elements = len(driver.find_elements(By.CSS_SELECTOR, scroll_selectors[0].selector))
+            LOG.info(f"Number of elements after scroll: {initial_elements}")
+        except Exception as e:
+            LOG.error(f"Exception occurred: {e}")
+
+    pages.add((driver.page_source, driver.current_url))
+    return driver.page_source
 
 
 async def make_site_request(
@@ -194,15 +214,21 @@ async def make_site_request(
         visited_urls.add(url)
         visited_urls.add(final_url)
 
-        page_source = scrape_content(driver, pages)
         click_selectors = [selector for selector in selectors if
                            selector.type == 'SelectorElementClick']
+        # scroll_selectors = [selector for selector in selectors if
+        #                     selector.type == 'SelectorElement' and selector.scroll]
         if click_selectors:
-            await handle_click(
+            page_source = handle_click(
                 click_selectors,
                 driver,
                 pages,
             )
+        # elif scroll_selectors:
+        #     Fixme: 执行的时候报错TimeoutException，暂未解决
+        #     page_source = handle_scroll(scroll_selectors, driver, pages)
+        else:
+            page_source = scrape_content(driver, pages)
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
         return
@@ -225,9 +251,11 @@ async def make_site_request(
 
     # 遍历所有分页选择器
     for _selector in _selectors:
-        for item_link in soup.select(_selector.selector):
+        links = soup.select(_selector.selector)
+        for item_link in links:
             link = item_link.get('href')
-            LOG.info(f"==============get link : {link}")
+            # LOG.info(f"===total links {len(links)} ,==========get link : {link}")
+            # continue
 
             if link:
                 if not urlparse(link).netloc:
