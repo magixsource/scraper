@@ -23,6 +23,8 @@ class ScrapeSelector(pydantic.BaseModel):
     clickType: Optional[str] = None
     delay: Optional[int] = None
     discardInitialElements: Optional[str] = None
+    scroll:  Optional[bool] = None
+    elementLimit:  Optional[int] = None
 
 
 class ScrapeJob(pydantic.BaseModel):
