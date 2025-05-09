@@ -27,9 +27,9 @@ LOG = logging.getLogger(__name__)
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 REQUEST_HISTORY_FILE = os.path.join(CURRENT_DIR, "request_history.txt")
 
-SCRAPE_LIMIT = 2
+SCRAPE_LIMIT = -1
 SCRAPE_COUNT = 0
-ENV = "dev"
+ENV = os.getenv("ENV", "dev")
 
 
 def read_visited_urls(file_path: str) -> Set[str]:
@@ -153,6 +153,7 @@ def handle_scroll(scroll_selectors, driver, pages):
             LOG.info(f"Number of elements after scroll: {initial_elements}")
         except Exception as e:
             LOG.error(f"Exception occurred: {e}")
+            break
 
     pages.add((driver.page_source, driver.current_url))
     return driver.page_source
@@ -190,7 +191,7 @@ async def make_site_request(
     if not selectors or not is_same_domain(url, original_url) or selectors == []:
         return
 
-    if SCRAPE_COUNT >= SCRAPE_LIMIT:
+    if 0 < SCRAPE_LIMIT <= SCRAPE_COUNT:
         LOG.info(f"==============Reached scrape limit: {SCRAPE_LIMIT}")
         return
 
@@ -302,7 +303,13 @@ async def collect_scraped_elements(grouped_list: List[Tuple[str, str]], selector
                 continue
             el = soup.select(selector.selector)
             # LOG.info(f"======= Selector: {selector.selector} and el: {el}")
-
+            if not el:
+                LOG.info(f"======= Selector: {selector.selector} not found,set default value.")
+                captured_element = CapturedElement(
+                    selector=selector.selector, text="", name=selector.id
+                )
+                elements[selector.id] = [captured_element]
+                continue
             for e in el:
                 text = ""
                 if selector.type == "SelectorElementClick":
