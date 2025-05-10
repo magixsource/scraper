@@ -36,5 +36,5 @@ This scraper project is a 'Web Scraper Chrome Extension' python implementation.
 * [x] Support upload data to database or web API
 * [ ] Support data process pipeline
 * [x] Support data wash like `regex`、`replace`、`split`
-* [ ] Support scrape state such like `request_history`
-* [ ] Support selector `SelectorElementClick` and `SelectorElement`
+* [x] Support scrape state such like `request_history`
+* [x] Support selector `SelectorElementClick` and `SelectorElement`
