@@ -425,7 +425,7 @@ async def scrape(job: ScrapeJob):
     normalized_pagination_set = {pad_www(url) for url in pagination_urls}
     for key, group in grouped_pages:
         # 如果是列表页，则跳过
-        if key in normalized_pagination_set:
+        if pad_www(key) in normalized_pagination_set:
             continue
         # 注意：需要把 group 转成 list 才能多次遍历
         grouped_list = [(p[0], p[1]) for p in group]
