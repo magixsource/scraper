@@ -317,11 +317,11 @@ async def collect_scraped_elements(grouped_list: List[Tuple[str, str]], selector
                 if selector.type == "SelectorText":
                     text = str(e.text).replace("\n", "").strip()
                 elif selector.type == "SelectorImage":
-                    text = e.get("src", "")
+                    text = str(e.get("src", ""))
                 elif selector.type == "SelectorElementAttribute":
-                    text = e.get(selector.extractAttribute, "")
+                    text = str(e.get(selector.extractAttribute, ""))
                 elif selector.type == "SelectorHTML":
-                    text = str(e)
+                    text = str(e.decode_contents())
 
                 if text:
                     # 如果有正则，则提取正则
@@ -335,10 +335,14 @@ async def collect_scraped_elements(grouped_list: List[Tuple[str, str]], selector
                 captured_element = CapturedElement(
                     selector=selector.selector, text=text, name=selector.id
                 )
-                if selector.id in elements and selector.multiple:
-                    elements[selector.id].append(captured_element)
-                    continue
-                elements[selector.id] = [captured_element]
+                if selector.multiple:
+                    if elements.get(selector.id):
+                        elements[selector.id].append(captured_element)
+                        continue
+                if not elements.get(selector.id) or not elements.get(selector.id, [])[0].text:
+                    elements[selector.id] = [captured_element]
+                else:
+                    break
 
     return {key: elements}
 
