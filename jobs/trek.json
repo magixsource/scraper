@@ -35,7 +35,7 @@
       "regex": ""
     },
     {
-      "id": "price",
+      "id": "priceInStr",
       "parentSelectors": [
         "items"
       ],
@@ -65,7 +65,7 @@
       "regex": ""
     },
     {
-      "id": "images",
+      "id": "coverPhoto",
       "parentSelectors": [
         "items"
       ],

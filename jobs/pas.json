@@ -35,7 +35,7 @@
       "regex": ""
     },
     {
-      "id": "price",
+      "id": "priceInStr",
       "parentSelectors": [
         "items"
       ],
@@ -55,14 +55,15 @@
       "regex": ""
     },
     {
-      "id": "images",
+      "id": "coverPhoto",
       "parentSelectors": [
         "items"
       ],
       "type": "SelectorElementAttribute",
       "selector": "li.aspect-\\[4\\/5\\] img",
       "multiple": false,
-      "extractAttribute": "srcset"
+      "extractAttribute": "srcset",
+      "regex": "https?://[^\\s>\"\\']+?\\.(?:jpe?g|png|gif|webp)(?:\\?[^\\s>\"\\']*)?"
     }
   ]
 }

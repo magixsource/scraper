@@ -46,7 +46,7 @@
       "regex": ""
     },
     {
-      "id": "image",
+      "id": "coverPhoto",
       "parentSelectors": [
         "items"
       ],

@@ -35,7 +35,7 @@
       "regex": ""
     },
     {
-      "id": "images",
+      "id": "coverPhoto",
       "parentSelectors": [
         "items"
       ],
@@ -77,31 +77,6 @@
       "discardInitialElements": "discard",
       "multiple": false,
       "selector": "form[data-testid=pdp-product-form]"
-    },
-    {
-      "id": "open_tab_m",
-      "parentSelectors": [
-        "items"
-      ],
-      "type": "SelectorElementClick",
-      "clickActionType": "real",
-      "clickElementSelector": "details[data-testid='accordion-careAndMaterials']",
-      "clickElementUniquenessType": "uniqueText",
-      "clickType": "clickOnce",
-      "delay": 4000,
-      "discardInitialElements": "discard",
-      "multiple": false,
-      "selector": "form[data-testid=pdp-product-form]"
-    },
-    {
-      "id": "material",
-      "parentSelectors": [
-        "open_tab_m"
-      ],
-      "type": "SelectorText",
-      "selector": "div[data-testid='details-accordion-careAndMaterials']",
-      "multiple": false,
-      "regex": ""
     }
   ]
 }

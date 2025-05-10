@@ -25,14 +25,14 @@
       "regex": ""
     },
     {
-      "id": "price",
+      "id": "priceInStr",
       "parentSelectors": [
         "items"
       ],
       "type": "SelectorText",
       "selector": "span.price",
       "multiple": false,
-      "regex": ""
+      "regex": "[\\$￥]\\d+(?:\\.\\d+)?"
     },
     {
       "id": "content",
@@ -45,7 +45,7 @@
       "regex": ""
     },
     {
-      "id": "image",
+      "id": "coverPhoto",
       "parentSelectors": [
         "items"
       ],
