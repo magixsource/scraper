@@ -172,8 +172,8 @@ async def process_single_job_sync(job, auth_token):
         file_path = save_as_csv(job, scraped)
         LOG.info(f"Saved file to: {file_path}")
         # upload to web api
-        # LOG.info("Upload to web api")
-        # upload_to_web_api(file_path, job, auth_token)
+        LOG.info("Upload to web api")
+        upload_to_web_api(file_path, job, auth_token)
     except Exception as e:
         LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
 
@@ -183,8 +183,8 @@ async def process_job_sync():
     if not jobs:
         return
 
-    # auth_token = login_to_service()
-    auth_token = None
+    auth_token = login_to_service()
+    # auth_token = None
     # 使用 ThreadPoolExecutor 来并发执行
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         loop = asyncio.get_event_loop()
