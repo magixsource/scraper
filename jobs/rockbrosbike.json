@@ -1,0 +1,57 @@
+{
+  "_id": "rockbrosbike",
+  "startUrl": [
+    "http://www.rockbrosbike.com/g/lists.html?cate_id=51"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": "div.grid-cols-12 div.col-span-6 div.line-clamp-2 a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.text-3xl",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.text-red-500",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "div.zoom-on-hover img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.grid-cols-12 div.col-span-12 div.mb-4:nth-child(n+3)",
+      "multiple": true,
+      "regex": ""
+    }
+  ]
+}

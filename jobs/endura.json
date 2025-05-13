@@ -1,0 +1,57 @@
+{
+  "_id": "endura",
+  "startUrl": [
+    "https://us.endurasport.com/mens.list?facetFilters=en_plg_discipline_content%3ARoad%7Cen_plg_subType_content%3AJerseys"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": "ul[data-testid=\"product-list-page-product-list\"] a.sc-hCTtzr",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span[data-testid=\"product-price-price\"]",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div[data-testid=\"Accordion\"]:nth-of-type(2)",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "img[fetchpriority='high']",
+      "multiple": false
+    }
+  ]
+}
