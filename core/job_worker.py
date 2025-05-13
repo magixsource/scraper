@@ -173,7 +173,7 @@ async def process_single_job_sync(job, auth_token):
         LOG.info(f"Saved file to: {file_path}")
         # upload to web api
         LOG.info("Upload to web api")
-        upload_to_web_api(file_path, job, auth_token)
+        upload_to_web_api(file_path, job.id, auth_token)
     except Exception as e:
         LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
 
