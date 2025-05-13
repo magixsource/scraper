@@ -127,13 +127,16 @@ def login_to_service():
 def upload_to_web_api(file_path, job_id, auth_token):
     api_endpoint = os.getenv('ENDPOINT_UPLOAD')
 
-    print(f"Uploading file to {api_endpoint}")
+    LOG.info(f"Uploading file to {api_endpoint}")
     if not api_endpoint or not auth_token:
         LOG.error("UPLOAD_ENDPOINT or UPLOAD_TOKEN is not set in environment variables.")
         return
-
+    # 判断文件是否存在
+    if not os.path.exists(file_path):
+        LOG.error(f"Upload failed ! cause of: file {file_path} does not exist.")
+        return
     # 读取文件内容
-    with open(file_path, 'rb') as f:
+    with open(file_path, 'rb', encoding='utf-8') as f:
         files = {
             'file': (file_path.split('/')[-1], f, 'text/csv')  # 假设上传的文件是 CSV 格式
         }
