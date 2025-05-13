@@ -36,7 +36,7 @@ def read_visited_urls(file_path: str) -> Set[str]:
     """从文件中读取已访问的URL，并返回一个集合。"""
     visited_urls = set()
     try:
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             for line in file:
                 visited_urls.add(line.strip())
     except FileNotFoundError:
@@ -49,7 +49,7 @@ def write_visited_url(file_path: str, url: str):
     if ENV == "dev":
         return
     LOG.info(f"Writing visited URL: {url}")
-    with open(file_path, "a") as file:
+    with open(file_path, "a", encoding="utf-8") as file:
         file.write(url + "\n")
 
 
@@ -393,30 +393,30 @@ async def scrape(job: ScrapeJob):
     proxies = []
 
     # 判断从本地读取pages
-    pages_file = f"../data/{job.id}.json"
-    pages_exist = os.path.exists(pages_file)
-    if pages_exist:
-        with open(pages_file, "r") as f:
-            pages_data = json.load(f)
-            # 确保每个元素都是列表，并转换为 tuple
-            pages = set(tuple(item) if isinstance(item, list) else item for item in pages_data)
-    else:
-        # 起始页如果是列表页，则添加到pagination_urls中
-        if multi_page_scrape:
-            pagination_urls = set(job.startUrl)
+    # pages_file = f"../data/{job.id}.json"
+    # pages_exist = os.path.exists(pages_file)
+    # if pages_exist:
+    #     with open(pages_file, "r") as f:
+    #         pages_data = json.load(f)
+    #         # 确保每个元素都是列表，并转换为 tuple
+    #         pages = set(tuple(item) if isinstance(item, list) else item for item in pages_data)
+    # else:
+    # 起始页如果是列表页，则添加到pagination_urls中
+    if multi_page_scrape:
+        pagination_urls = set(job.startUrl)
 
-        _ = await make_site_request(
-            url,
-            multi_page_scrape=multi_page_scrape,
-            visited_urls=visited_urls,
-            pages=pages,
-            pagination_urls=pagination_urls,
-            original_url=url,
-            proxies=proxies,
-            selectors=selectors,
-        )
+    _ = await make_site_request(
+        url,
+        multi_page_scrape=multi_page_scrape,
+        visited_urls=visited_urls,
+        pages=pages,
+        pagination_urls=pagination_urls,
+        original_url=url,
+        proxies=proxies,
+        selectors=selectors,
+    )
 
-        write_pages(pages_file, pages)
+    # write_pages(pages_file, pages)
 
     elements: List[Dict[str, Dict[str, List[CapturedElement]]]] = list()
 
