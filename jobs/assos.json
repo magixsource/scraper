@@ -69,7 +69,7 @@
         "items"
       ],
       "type": "SelectorText",
-      "selector": "div.jss1193",
+      "selector": "div.MuiGrid-container div.swiper-container",
       "multiple": false,
       "regex": ""
     }
