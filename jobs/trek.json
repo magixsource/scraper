@@ -78,7 +78,7 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorHTML",
+      "type": "SelectorText",
       "selector": "section#aftermarketProductFeaturesComponent",
       "multiple": false,
       "regex": ""

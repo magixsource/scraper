@@ -48,7 +48,7 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorHTML",
+      "type": "SelectorText",
       "selector": ".tab-description div.tabcontent__content",
       "multiple": false,
       "regex": ""

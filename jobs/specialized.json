@@ -49,7 +49,7 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorHTML",
+      "type": "SelectorText",
       "selector": "div[data-component=\"desktop-gallery\"]",
       "multiple": false,
       "regex": ""

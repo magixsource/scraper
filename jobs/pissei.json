@@ -48,7 +48,7 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorHTML",
+      "type": "SelectorText",
       "selector": "div.details_attributi_descrizione",
       "multiple": false,
       "regex": ""

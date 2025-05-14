@@ -49,7 +49,7 @@
       "parentSelectors": [
         "items"
       ],
-      "type": "SelectorHTML",
+      "type": "SelectorText",
       "selector": "div.swiper-backface-hidden",
       "multiple": false,
       "regex": ""
