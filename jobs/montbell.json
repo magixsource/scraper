@@ -41,7 +41,8 @@
       ],
       "type": "SelectorImage",
       "selector": ".visual-container img.product-name",
-      "multiple": false
+      "multiple": false,
+      "extraPrepend": "https://www.montbell.com"
     },
     {
       "id": "content",
