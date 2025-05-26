@@ -16,6 +16,7 @@ class ScrapeSelector(pydantic.BaseModel):
     regex: Optional[str] = None
     paginationType: Optional[str] = None
     extraReplace:  Optional[str] = None
+    extraPrepend:  Optional[str] = None
     # clickAction
     clickActionType: Optional[str] = None
     clickElementSelector: Optional[str] = None

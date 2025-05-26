@@ -330,6 +330,9 @@ async def collect_scraped_elements(grouped_list: List[Tuple[str, str]], selector
                     # 如果有extraReplace，则替换
                     if selector.extraReplace:
                         text = str(text).replace(selector.extraReplace, "").strip()
+                    # 如果有extraPrepend，则添加
+                    if selector.extraPrepend:
+                        text = str(selector.extraPrepend + text).strip()
 
                 # print(f"==========={e} --> ====={selector.id} : {text}")
                 captured_element = CapturedElement(
