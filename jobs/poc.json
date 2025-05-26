@@ -1,0 +1,67 @@
+{
+  "_id": "poc",
+  "startUrl": [
+    "https://poc.com/en-us/categories/cycling/road/apparel/men/jerseys-tees"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": ".bg-\\[\\#f4f5f5\\] a,.group > a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.flex.mb-24",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "div.col-row-1:nth-of-type(1) img.opacity-0",
+      "multiple": false
+    },
+    {
+      "id": "summary",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".md\\:mb-32 p.md\\:text-16",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "p.md\\:text-24",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

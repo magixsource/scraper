@@ -1,0 +1,57 @@
+{
+  "_id": "odlo",
+  "startUrl": [
+    "https://www.odlo.com/eu-en/c/men/sports/cycling?producttype=T-shirts+%26+Polos"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.mt-4",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".mt-3 p",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "picture.picture-cover img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "p.mt-8",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

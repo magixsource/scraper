@@ -1,0 +1,57 @@
+{
+  "_id": "sportful",
+  "startUrl": [
+    "https://www.sportful.com/US/en/Cycling/Collections/SRK-Sportful-Riders-Kit/c/Cyc-Col-Srk?q=%3Arelevance%3AproductCategory%3AJerseys&text=#"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": ".active a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.f500.actual-price",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".mosaic a.mosaicitem img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.shortdesc,div.accordion-body",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

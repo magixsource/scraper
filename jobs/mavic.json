@@ -1,0 +1,78 @@
+{
+  "_id": "mavic",
+  "startUrl": [
+    "https://www.mavic.com/en-us/t/apparel-road"
+  ],
+  "selectors": [
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": ".dark span"
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.wrapper",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "article span.current",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".zoomable img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".wysiwyg p,.wysiwyg",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "summary",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".description p",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

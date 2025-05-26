@@ -1,0 +1,57 @@
+{
+  "_id": "lecol",
+  "startUrl": [
+    "https://lecol.cc/en-cn/collections/mens-cycling-jerseys"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.product-card__link",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.pdp-buy-box__title",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.pdp-price-section__price",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "a.pdp-hero-carousel-slide__lightbox-trigger img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.tab-product-description",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

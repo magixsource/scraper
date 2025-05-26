@@ -1,0 +1,68 @@
+{
+  "_id": "rosti",
+  "startUrl": [
+    "https://www.rostifrance.com/en/345-men-s-cycling-jerseys"
+  ],
+  "selectors": [
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": "a.next"
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": "div.product_list article div.product-image a.product-thumbnail",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".current-price span",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "div.slick-track div.thumb-container.active img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.product-description",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

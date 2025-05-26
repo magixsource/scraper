@@ -1,0 +1,83 @@
+{
+  "_id": "etxeondo",
+  "startUrl": [
+    "https://www.etxeondo.com/en/cycling-jerseys-132"
+  ],
+  "selectors": [
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorElement",
+      "selector": "div.products",
+      "multiple": true,
+      "scroll": true,
+      "elementLimit": 0
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": ".h3 a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.product-price",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "div.product-lmage-large img",
+      "multiple": false
+    },
+    {
+      "id": "read_more",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorElementClick",
+      "clickActionType": "real",
+      "clickElementSelector": "a.product-description-btn",
+      "clickElementUniquenessType": "uniqueText",
+      "clickType": "clickOnce",
+      "delay": 2000,
+      "discardInitialElements": "discard",
+      "multiple": false,
+      "selector": "div.descripcion-custom"
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "read_more"
+      ],
+      "type": "SelectorText",
+      "selector": "p",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

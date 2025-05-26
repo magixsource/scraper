@@ -1,0 +1,83 @@
+{
+  "_id": "pactimo",
+  "startUrl": [
+    "https://www.pactimo.com/collections/mens-cycling-jerseys-tops"
+  ],
+  "selectors": [
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorElement",
+      "selector": "div#gf-grid",
+      "multiple": true,
+      "scroll": true,
+      "elementLimit": 0
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.grid-product__link",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.on-sale",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".starting-slide img",
+      "multiple": false
+    },
+    {
+      "id": "open_tab",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorElementClick",
+      "clickActionType": "real",
+      "clickElementSelector": "button.collapsible-trigger-btn",
+      "clickElementUniquenessType": "uniqueText",
+      "clickType": "clickOnce",
+      "delay": 2000,
+      "discardInitialElements": "discard",
+      "multiple": false,
+      "selector": "div[data-product-blocks]"
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "open_tab"
+      ],
+      "type": "SelectorText",
+      "selector": ".is-open div.collapsible-content__inner",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "_id": "kalas",
+  "startUrl": [
+    "https://cycolo.com/en-us/collections/kalas?filter.p.product_type=Clothing+/+Jerseys"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": ".productitem--title a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": ".pagination--next a"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".product__price .price__current span.money",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "div.product-gallery--image-background img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "section.custom-liquid--container",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

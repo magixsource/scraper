@@ -1,0 +1,68 @@
+{
+  "_id": "garneau",
+  "startUrl": [
+    "https://garneau.com/collections/men?filter.p.m.pim.product_type=Jersey"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": ".product-item__info a.product-link",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": ".pagination-custom__next span"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.product__price--sale",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".media--active img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.product__description__content,div.toggle-ellipsis__content p",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

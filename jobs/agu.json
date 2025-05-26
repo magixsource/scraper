@@ -1,0 +1,78 @@
+{
+  "_id": "agu",
+  "startUrl": [
+    "https://agu.com/eu/bike-wear/men-s-wear?agu_product_type%5B0%5D=Jersey+SS"
+  ],
+  "selectors": [
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": ".toolbar-bottom a.action"
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.product-item-link",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".price-final_price .price-container span.price",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".fotorama__active.fotorama__stage__frame img",
+      "multiple": false
+    },
+    {
+      "id": "summary",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.product-short-description",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".description div",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

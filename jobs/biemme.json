@@ -1,0 +1,68 @@
+{
+  "_id": "biemme",
+  "startUrl": [
+    "https://www.biemmesport.com/en-eu/collections/maglie-da-uomo-manica-corta"
+  ],
+  "selectors": [
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorElement",
+      "selector": "div.gap-12",
+      "multiple": true,
+      "scroll": true,
+      "elementLimit": 0
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.product-card__title",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": ".items-baseline span.price__regular",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".product__preview img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.rte.product__text",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "_id": "maap",
+  "startUrl": [
+    "https://maap.cc/us/collections/cycling-jerseys"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "linkType": "linkFromHref",
+      "multiple": true,
+      "parentSelectors": [
+        "_root"
+      ],
+      "selector": ".collection-filterable-grid_grid__CZML5 a",
+      "type": "SelectorLink"
+    },
+    {
+      "id": "title",
+      "multiple": false,
+      "parentSelectors": [
+        "items"
+      ],
+      "regex": "",
+      "selector": "h1",
+      "type": "SelectorText"
+    },
+    {
+      "id": "coverPhoto",
+      "multiple": false,
+      "parentSelectors": [
+        "items"
+      ],
+      "selector": ".swiper-pdp-gallery .swiper-slide-active img",
+      "type": "SelectorImage"
+    },
+    {
+      "id": "priceInStr",
+      "multiple": false,
+      "parentSelectors": [
+        "items"
+      ],
+      "regex": "",
+      "selector": "div.product-buy_price__oyJuY",
+      "type": "SelectorText"
+    },
+    {
+      "id": "content",
+      "multiple": false,
+      "parentSelectors": [
+        "items"
+      ],
+      "regex": "",
+      "selector": "p.PatternLanguageIntro_description__7UUF1",
+      "type": "SelectorText"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "_id": "hincapie",
+  "startUrl": [
+    "https://hincapie.com/collections/mens-cycling-jerseys"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.product-grid-item__title",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1.product__title",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.product__price--regular",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorElementAttribute",
+      "selector": ".product-single__media--image img",
+      "multiple": false,
+      "extractAttribute": "srcset"
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.product__description p,div.product__description",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorElement",
+      "selector": ".collection__wrapper div.wrapper",
+      "multiple": true,
+      "scroll": true,
+      "elementLimit": 0
+    }
+  ]
+}

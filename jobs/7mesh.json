@@ -1,0 +1,72 @@
+{
+  "_id": "7mesh",
+  "startUrl": [
+    "https://7mesh.com/en-INT/collections/mens-jerseys"
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorLink",
+      "selector": ".sc-jIGnZt a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".InDetailSection__InDetailItemLg-mtwwb3-1 img",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "open_tab"
+      ],
+      "type": "SelectorText",
+      "selector": "div[aria-label=\"Product description\"] p",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.klYftZ",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "open_tab",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorElementClick",
+      "clickActionType": "real",
+      "clickElementSelector": "div.sc-dExYaf:nth-of-type(1) button",
+      "clickElementUniquenessType": "uniqueText",
+      "clickType": "clickOnce",
+      "delay": 2000,
+      "discardInitialElements": "discard",
+      "multiple": false,
+      "selector": ".lgHgwi div.sc-dcJsrY"
+    }
+  ]
+}

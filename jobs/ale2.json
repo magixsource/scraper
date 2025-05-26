@@ -1,0 +1,83 @@
+{
+  "_id": "ale2",
+  "startUrl": [
+    "https://alecycling.com/en/collections/jerseys-cycling-men?sort_by=manual&filter.p.product_type=Short+Sleeve+Jersey&filter.v.price.gte=&filter.v.price.lte=&apg-temperature-range-min=0&apg-temperature-range-max=40"
+  ],
+  "selectors": [
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root"
+      ],
+      "type": "SelectorElement",
+      "selector": "div#product-grid",
+      "multiple": true,
+      "scroll": true,
+      "elementLimit": 0
+    },
+    {
+      "id": "items",
+      "parentSelectors": [
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": ".collection-first-card-product a, .product-collection-first-product a",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1.product__title-value",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "span.price-item--regular",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": ".is-active img",
+      "multiple": false
+    },
+    {
+      "id": "read_more",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorElementClick",
+      "clickActionType": "real",
+      "clickElementSelector": "span[x-show='!showAll']",
+      "clickElementUniquenessType": "uniqueText",
+      "clickType": "clickOnce",
+      "delay": 2000,
+      "discardInitialElements": "discard",
+      "multiple": true,
+      "selector": "div.product__description"
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "read_more"
+      ],
+      "type": "SelectorText",
+      "selector": "h5",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}

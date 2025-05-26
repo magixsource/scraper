@@ -1,0 +1,68 @@
+{
+  "_id": "nalini",
+  "startUrl": [
+    "https://www.nalini.com/en/products/men/52/jerseys?cat=110&_gl=1*12uu2f3*_up*MQ..*_ga*MTcxMzY4MjAyMy4xNzQ4MjIwOTI2*_ga_8TH1RV6FBM*czE3NDgyMjA5MjUkbzEkZzAkdDE3NDgyMjA5MjUkajAkbDAkaDE4ODc3NTQ4NDc."
+  ],
+  "selectors": [
+    {
+      "id": "items",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "type": "SelectorLink",
+      "selector": "a.prdCard_v2",
+      "multiple": true,
+      "linkType": "linkFromHref"
+    },
+    {
+      "id": "pages",
+      "parentSelectors": [
+        "_root",
+        "pages"
+      ],
+      "paginationType": "auto",
+      "type": "SelectorPagination",
+      "selector": ".page-link span"
+    },
+    {
+      "id": "title",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "h1",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "priceInStr",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.price",
+      "multiple": false,
+      "regex": ""
+    },
+    {
+      "id": "coverPhoto",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorImage",
+      "selector": "img.mb-2",
+      "multiple": false
+    },
+    {
+      "id": "content",
+      "parentSelectors": [
+        "items"
+      ],
+      "type": "SelectorText",
+      "selector": "div.block",
+      "multiple": false,
+      "regex": ""
+    }
+  ]
+}
