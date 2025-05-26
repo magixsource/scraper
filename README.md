@@ -38,3 +38,7 @@ This scraper project is a 'Web Scraper Chrome Extension' python implementation.
 * [x] Support data wash like `regex`、`replace`、`split`
 * [x] Support scrape state such like `request_history`
 * [x] Support selector `SelectorElementClick` and `SelectorElement`
+
+## Troubleshooting
+* Format price: price scraped from website is a string, you can use `regex` to format it. `"[\\$￥]\\d+(?:\\.\\d+)?"` can be used to match price and make sure price string correct.
+* Format image  url: image url scraped from website is a string, use `regex` to format it. `"https?://[^\\s>\"\\']+?\\.(?:jpe?g|png|gif|webp)(?:\\?[^\\s>\"\\']*)?"` can be used to make sure url not illegal.
