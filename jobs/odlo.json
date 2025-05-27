@@ -32,7 +32,7 @@
       "type": "SelectorText",
       "selector": ".mt-3 p",
       "multiple": false,
-      "regex": ""
+      "regex": "[\\$￥€]\\d+(?:\\.\\d+)?"
     },
     {
       "id": "coverPhoto",
