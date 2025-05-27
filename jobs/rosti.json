@@ -43,7 +43,7 @@
       "type": "SelectorText",
       "selector": ".current-price span",
       "multiple": false,
-      "regex": ""
+      "regex": "[\\$￥€]\\d+(?:\\.\\d+)?"
     },
     {
       "id": "coverPhoto",
