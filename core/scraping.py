@@ -1,10 +1,13 @@
+import asyncio
 import itertools
 import json
 import logging
 import os
 import random
 import re
+import threading
 import time
+from collections import deque
 from typing import Any, Optional, List, Dict, Set, Tuple, cast
 from urllib.parse import urlparse, urljoin, urlunparse
 
@@ -159,6 +162,35 @@ def handle_scroll(scroll_selectors, driver, pages):
     return driver.page_source
 
 
+# 为每个线程维护一个简单的driver池
+class SimpleThreadLocalPool:
+    def __init__(self):
+        self.local = threading.local()
+
+    def get_pool(self):
+        if not hasattr(self.local, 'pool'):
+            self.local.pool = deque()
+        return self.local.pool
+
+    def get_driver(self, proxies=None):
+        pool = self.get_pool()
+        if pool:
+            return pool.popleft()
+        else:
+            return create_driver(proxies)
+
+    def release_driver(self, driver):
+        pool = self.get_pool()
+        if len(pool) < 2:  # 最多保持2个空闲driver
+            pool.append(driver)
+        else:
+            driver.quit()
+
+
+# 全局线程本地池管理器
+driver_pool_manager = SimpleThreadLocalPool()
+
+
 async def make_site_request(
         url: str,
         multi_page_scrape: bool = False,
@@ -203,7 +235,8 @@ async def make_site_request(
     # debug end
     driver = None
     try:
-        driver = create_driver(proxies)
+        # 从池中获取浏览器实例
+        driver = driver_pool_manager.get_driver(proxies)
         driver.implicitly_wait(10)
         # if headers:
         #     driver.request_interceptor = interceptor(headers)
@@ -234,7 +267,9 @@ async def make_site_request(
         LOG.error(f"Exception occurred: {e}")
         return
     finally:
-        driver.quit()
+        # 将浏览器实例返回池中而不是关闭
+        if driver:
+            driver_pool_manager.release_driver(driver)
     if not multi_page_scrape:
         # 将请求详情页的URL写入文件
         write_visited_url(REQUEST_HISTORY_FILE, final_url)
@@ -242,6 +277,9 @@ async def make_site_request(
         return
 
     soup = BeautifulSoup(page_source, "html.parser")
+
+    # 收集所有需要爬取的链接
+    links_to_crawl = []
 
     # webscraper logic to scrape multiple pages
     # find all root child selectors by parentSelectors is contains '_root'
@@ -275,15 +313,69 @@ async def make_site_request(
                         pagination_urls.add(link)
                         LOG.info(f"==============add pagination_urls : {link}")
 
-                    await make_site_request(
-                        link,
-                        multi_page_scrape=_multi_page_scrape,
-                        visited_urls=visited_urls,
-                        pages=pages,
-                        pagination_urls=pagination_urls,
-                        original_url=original_url,
-                        selectors=all_child_selectors,
-                    )
+                    links_to_crawl.append({
+                        'url': link,
+                        'multi_page_scrape': _multi_page_scrape,
+                        'visited_urls': visited_urls,
+                        'pages': pages,
+                        'pagination_urls': pagination_urls,
+                        'original_url': original_url,
+                        'proxies': proxies,
+                        'selectors': all_child_selectors,
+                    })
+
+    # 并发处理所有链接
+    if links_to_crawl:
+        LOG.info(f"Found {len(links_to_crawl)} links to crawl, processing concurrently")
+        tasks = []
+        for link_info in links_to_crawl:
+            task = make_site_request_with_retry(
+                url=link_info['url'],
+                multi_page_scrape=link_info['multi_page_scrape'],
+                visited_urls=link_info['visited_urls'],
+                pages=link_info['pages'],
+                pagination_urls=link_info['pagination_urls'],
+                original_url=link_info['original_url'],
+                proxies=link_info['proxies'],
+                selectors=link_info['selectors'],
+            )
+            tasks.append(task)
+        # 并发执行所有任务
+        await asyncio.gather(*tasks, return_exceptions=True)
+
+
+async def make_site_request_with_retry(
+        url: str,
+        multi_page_scrape: bool = False,
+        pagination_urls=None,
+        visited_urls=None,
+        pages=None,
+        original_url: str = "",
+        proxies=None,
+        selectors=None,
+        max_retries: int = 2
+) -> None:
+    """带重试机制的页面请求函数"""
+    LOG.info(f"========make_site_request_with_retry -> {url}")
+    for attempt in range(max_retries + 1):
+        try:
+            await make_site_request(
+                url=url,
+                multi_page_scrape=multi_page_scrape,
+                pagination_urls=pagination_urls,
+                visited_urls=visited_urls,
+                pages=pages,
+                original_url=original_url,
+                proxies=proxies,
+                selectors=selectors
+            )
+            return  # 成功则返回
+        except Exception as e:
+            if attempt < max_retries:
+                LOG.warning(f"Attempt {attempt + 1} failed for {url}, retrying... Error: {e}")
+                await asyncio.sleep(2 ** attempt)  # 指数退避
+            else:
+                LOG.error(f"All {max_retries + 1} attempts failed for {url}. Error: {e}")
 
 
 async def collect_scraped_elements(grouped_list: List[Tuple[str, str]], selectors: List[ScrapeSelector]):
@@ -395,20 +487,10 @@ async def scrape(job: ScrapeJob):
     selectors = job.selectors if job.selectors else []
     proxies = []
 
-    # 判断从本地读取pages
-    # pages_file = f"../data/{job.id}.json"
-    # pages_exist = os.path.exists(pages_file)
-    # if pages_exist:
-    #     with open(pages_file, "r") as f:
-    #         pages_data = json.load(f)
-    #         # 确保每个元素都是列表，并转换为 tuple
-    #         pages = set(tuple(item) if isinstance(item, list) else item for item in pages_data)
-    # else:
-    # 起始页如果是列表页，则添加到pagination_urls中
     if multi_page_scrape:
         pagination_urls = set(job.startUrl)
 
-    _ = await make_site_request(
+    _ = await make_site_request_with_retry(
         url,
         multi_page_scrape=multi_page_scrape,
         visited_urls=visited_urls,
