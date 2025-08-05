@@ -1,13 +1,14 @@
+import asyncio
 import concurrent
-import json
-import os
-import traceback
-
 import csv
-from io import StringIO
-
+import json
+import logging
+import os
+import sys
+import time
+import traceback
 from datetime import datetime
-
+from io import StringIO
 from pathlib import Path
 
 import pydantic
@@ -16,10 +17,6 @@ from dotenv import load_dotenv
 
 from core.scraping import scrape
 from models import ScrapeJob
-
-import asyncio
-import logging
-import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOG = logging.getLogger(__name__)
@@ -169,14 +166,21 @@ def upload_to_web_api(file_path, job_id, auth_token):
 
 async def process_single_job_sync(job, auth_token):
     try:
-        LOG.info(f"Beginning processing job: {job}.")
+        LOG.info(f"=== process_single_job_sync Beginning processing job: {job.id}.")
+        start_time = time.time()
         scraped = await scrape(job)
-        LOG.info(f"Scraped result for url: {job.startUrl}, with result: \n{scraped}")
-        file_path = save_as_csv(job, scraped)
-        LOG.info(f"Saved file to: {file_path}")
-        # upload to web api
-        LOG.info("Upload to web api")
-        upload_to_web_api(file_path, job.id, auth_token)
+        end_time = time.time()
+        LOG.info(f"Completed job {job.id} in {end_time - start_time:.2f} seconds. "
+                 f"Scraped {len(scraped) if scraped else 0} items.")
+        if scraped:
+            LOG.info(f"Scraped result for url: {job.startUrl}")
+            file_path = save_as_csv(job, scraped)
+            LOG.info(f"Saved file to: {file_path}")
+            # upload to web api
+            LOG.info("Upload to web api")
+            upload_to_web_api(file_path, job.id, auth_token)
+        else:
+            LOG.warning(f"No data scraped for job {job.id}")
     except Exception as e:
         LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
 
