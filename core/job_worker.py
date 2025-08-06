@@ -133,7 +133,7 @@ def upload_to_web_api(file_path, job_id, auth_token):
         LOG.error(f"Upload failed ! cause of: file {file_path} does not exist.")
         return
     # 读取文件内容
-    with open(file_path, 'rb', encoding='utf-8') as f:
+    with open(file_path, 'rb') as f:
         files = {
             'file': (file_path.split('/')[-1], f, 'text/csv')  # 假设上传的文件是 CSV 格式
         }
