@@ -183,6 +183,9 @@ async def process_single_job_sync(job, auth_token):
             LOG.warning(f"No data scraped for job {job.id}")
     except Exception as e:
         LOG.error(f"Exception occurred: {e}\n{traceback.print_exc()}")
+    finally:
+        # 确保每次任务结束后清理资源
+        pass
 
 
 async def process_job_sync():

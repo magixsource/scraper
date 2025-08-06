@@ -34,6 +34,9 @@ SCRAPE_LIMIT = -1
 SCRAPE_COUNT = 0
 ENV = os.getenv("ENV", "dev")
 
+MAX_CONCURRENT_TASKS = 10  # 设置合理的并发数量
+semaphore = asyncio.Semaphore(MAX_CONCURRENT_TASKS)
+
 
 def read_visited_urls(file_path: str) -> Set[str]:
     """从文件中读取已访问的URL，并返回一个集合。"""
@@ -329,7 +332,7 @@ async def make_site_request(
         LOG.info(f"Found {len(links_to_crawl)} links to crawl, processing concurrently")
         tasks = []
         for link_info in links_to_crawl:
-            task = make_site_request_with_retry(
+            task = limited_make_site_request_with_retry(
                 url=link_info['url'],
                 multi_page_scrape=link_info['multi_page_scrape'],
                 visited_urls=link_info['visited_urls'],
@@ -376,6 +379,11 @@ async def make_site_request_with_retry(
                 await asyncio.sleep(2 ** attempt)  # 指数退避
             else:
                 LOG.error(f"All {max_retries + 1} attempts failed for {url}. Error: {e}")
+
+
+async def limited_make_site_request_with_retry(*args, **kwargs):
+    async with semaphore:
+        return await make_site_request_with_retry(*args, **kwargs)
 
 
 async def collect_scraped_elements(grouped_list: List[Tuple[str, str]], selectors: List[ScrapeSelector]):
@@ -490,7 +498,7 @@ async def scrape(job: ScrapeJob):
     if multi_page_scrape:
         pagination_urls = set(job.startUrl)
 
-    _ = await make_site_request_with_retry(
+    _ = await limited_make_site_request_with_retry(
         url,
         multi_page_scrape=multi_page_scrape,
         visited_urls=visited_urls,
